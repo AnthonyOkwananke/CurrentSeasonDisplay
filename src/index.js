@@ -1,17 +1,53 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import SeasonDisplay from './SeasonDisplay';
+import Loader from './Loader';
+
+class App extends React.Component {
+    /* // used to initialize state
+    constructor(props) {
+        // must always call super
+        super(props);
+        //direct assignment to this.state only to initialize
+        this.state = { lat: null, errorMessage: ''};    
+    } */
+
+    state = { lat: null, errorMessage: ''};
+
+    componentDidMount () {
+        window.navigator.geolocation.getCurrentPosition(
+            //call setState to update state object
+            position => this.setState({ lat: position.coords.latitude}),
+            //error message callback
+            err => this.setState({ errorMessage: err.message})
+            
+        );
+    }
+
+    // create a helper render helper to avoid repeated conditional statement inside render
+    renderContent () {
+        if (this.state.errorMessage && !this.state.lat) {
+            return <div>Error: {this.state.errorMessage}</div>
+            }
+    
+            if (!this.state.errorMessage && this.state.lat) {
+            return <SeasonDisplay lat={this.state.lat}/>
+            }
+    
+            return <Loader message="Please accept location request" />;
+            
+    }
+
+    // Must define render in react
+    render() {
+        return (
+            <div className="border red">
+                {this.renderContent()}
+            </div>
+        );
+    }
+}
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+    <App />, document.querySelector('#root')
 );
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();

@@ -4,38 +4,31 @@ import SeasonDisplay from './SeasonDisplay';
 import Loader from './Loader';
 
 class App extends React.Component {
-    /* // used to initialize state
-    constructor(props) {
-        // must always call super
-        super(props);
-        //direct assignment to this.state only to initialize
-        this.state = { lat: null, errorMessage: ''};    
-    } */
 
-    state = { lat: null, errorMessage: ''};
+    state = { lat: null, errorMessage: '' };
 
-    componentDidMount () {
+    componentDidMount() {
         window.navigator.geolocation.getCurrentPosition(
             //call setState to update state object
-            position => this.setState({ lat: position.coords.latitude}),
+            position => this.setState({ lat: position.coords.latitude }),
             //error message callback
-            err => this.setState({ errorMessage: err.message})
-            
+            err => this.setState({ errorMessage: err.message })
+
         );
     }
 
     // create a helper render helper to avoid repeated conditional statement inside render
-    renderContent () {
+    renderContent() {
         if (this.state.errorMessage && !this.state.lat) {
             return <div>Error: {this.state.errorMessage}</div>
-            }
-    
-            if (!this.state.errorMessage && this.state.lat) {
-            return <SeasonDisplay lat={this.state.lat}/>
-            }
-    
-            return <Loader message="Please accept location request" />;
-            
+        }
+
+        if (!this.state.errorMessage && this.state.lat) {
+            return <SeasonDisplay lat={this.state.lat} />
+        }
+
+        return <Loader message="Please accept location request" />;
+
     }
 
     // Must define render in react
